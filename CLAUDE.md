@@ -33,18 +33,18 @@ These exist because this is a side project Mathias wants to run with real engine
 
 ### Pull requests
 
-- **Every change goes through a PR.** Never push to `main`.
+- **Every change goes through a PR.** Never push to `master`.
 - **Small, focused PRs.** One concern per PR. Splitting scaffolding into 3 PRs is correct, not pedantic.
 - **PR description = the durable record.** Explain *why*, not just *what*. Future-you reads this in 6 months.
 - **CI must pass before merge.** No `--no-verify`, no merging red.
-- **Squash merge** by default — one commit per PR on `main`. The repo is configured so the squash commit subject **is the PR title**, so the PR title is the commit message that lands on `main`.
+- **Squash merge** by default — one commit per PR on `master`. The repo is configured so the squash commit subject **is the PR title**, so the PR title is the commit message that lands on `master`.
 - **PR title must follow [Conventional Commits](https://www.conventionalcommits.org/).** Format: `<type>(<optional scope>): <subject>` — e.g. `feat(web): add hero section`, `chore(infra): bump terraform google provider`, `docs: clarify deploy steps`. Enforced by `.github/workflows/commitlint.yml`.
 
 ### Branches & commits
 
-- Branch from `main`. Naming is loose — pick something descriptive (`infra/firebase-hosting`, `web/hero-section`, `ci/deploy-workflow`).
-- In-branch commits can be informal (WIP-style is fine while iterating). Only the **squashed PR title** has to satisfy Conventional Commits, since that's the only commit that lands on `main`.
-- Rebase on `main` before merging if there are conflicts; don't merge `main` into the branch.
+- Branch from `master`. Naming is loose — pick something descriptive (`infra/firebase-hosting`, `web/hero-section`, `ci/deploy-workflow`).
+- In-branch commits can be informal (WIP-style is fine while iterating). Only the **squashed PR title** has to satisfy Conventional Commits, since that's the only commit that lands on `master`.
+- Rebase on `master` before merging if there are conflicts; don't merge `master` into the branch.
 
 ### Infra changes
 
