@@ -1,0 +1,40 @@
+# fmt-check + validate for the terraform in infra/. No `plan` in CI yet —
+# that would need a separate read-only WIF identity, and the working
+# agreement says apply is manual for now anyway.
+#
+# `init -backend=false` skips state setup so this works without GCP creds.
+# We still install providers (validate needs them) but never reach an API.
+
+name: infra
+
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'infra/**'
+      - '.github/workflows/infra.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: infra
+
+jobs:
+  fmt-and-validate:
+    name: fmt + validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.1
+          terraform_wrapper: false
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false -input=false
+      - run: terraform validate
