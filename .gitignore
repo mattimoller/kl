@@ -37,3 +37,13 @@ override.tf.json
 
 # Note: .terraform.lock.hcl is intentionally NOT ignored — committing it
 # pins provider versions for reproducible plans across machines and CI.
+
+# --- Claude Code runtime ---
+# Worktrees and local launch/lock files are per-machine state, not config.
+# Skills, agents, rules, and settings.json under .claude/ ARE committed.
+.claude/worktrees/
+.claude/launch.json
+.claude/scheduled_tasks.lock
+
+# Output dir used by the /quality-review skill agents
+.mcp-output/
