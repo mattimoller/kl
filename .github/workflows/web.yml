@@ -1,0 +1,41 @@
+# Type-checks and builds the Astro app on every PR (and on push to master).
+#
+# Path filters keep this from running on infra-only or root-only changes.
+# `astro check` covers TypeScript + Astro template type-checking; we
+# don't ship ESLint yet — can be added in a follow-up PR if the project
+# grows enough to need style enforcement beyond TS.
+
+name: web
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '.github/workflows/web.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'web/**'
+      - '.github/workflows/web.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  check:
+    name: Type-check & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
