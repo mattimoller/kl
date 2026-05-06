@@ -21,6 +21,12 @@ on:
 permissions:
   contents: read
 
+env:
+  # Terraform reads providers from this dir on `init`, falling back to a
+  # network download only on cache miss. Cache key is the lock file's hash
+  # so a provider bump invalidates correctly.
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+
 defaults:
   run:
     working-directory: infra
@@ -35,6 +41,15 @@ jobs:
         with:
           terraform_version: 1.14.1
           terraform_wrapper: false
+      - name: Cache terraform providers
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: ${{ runner.os }}-terraform-${{ hashFiles('infra/.terraform.lock.hcl') }}
+          restore-keys: ${{ runner.os }}-terraform-
+      - name: Ensure plugin cache dir exists
+        working-directory: ${{ github.workspace }}
+        run: mkdir -p "$TF_PLUGIN_CACHE_DIR"
       - run: terraform fmt -check -recursive
       - run: terraform init -backend=false -input=false
       - run: terraform validate

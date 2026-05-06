@@ -40,6 +40,8 @@ resource "google_service_account" "deploy" {
   account_id   = "github-deploy"
   display_name = "GitHub Actions Deploy"
   description  = "Impersonated by GitHub Actions via WIF to deploy Firebase Hosting"
+
+  depends_on = [google_project_service.enabled]
 }
 
 resource "google_service_account_iam_member" "deploy_wif_user" {
@@ -53,4 +55,6 @@ resource "google_project_iam_member" "deploy_firebase_hosting" {
   project = var.project_id
   role    = "roles/firebasehosting.admin"
   member  = "serviceAccount:${google_service_account.deploy.email}"
+
+  depends_on = [google_project_service.enabled]
 }
