@@ -13,8 +13,8 @@ This file is the working contract between Mathias and Claude (and a quick orient
 | Frontend | **Astro + TypeScript** | Content-leaning site, ships near-zero JS by default, great DX |
 | Hosting | **Firebase Hosting** | Google-owned, free tier, automatic TLS, low ops overhead |
 | Infra-as-Code | **Terraform** | Single source of truth for GCP resources |
-| Cloud | **GCP** — project `mathias-privat` | |
-| DNS | **Cloud DNS** managed zone | Registrar stays at Squarespace; nameservers point to Cloud DNS |
+| Cloud | **GCP** — project `mathias-privat`, default region `europe-west1` (closest full-feature region for Norway; used as the default for any future regional resource) | |
+| DNS | **Cloud DNS** managed zone | Registrar is **Cloud Domains** in `mathias-privat`; nameservers point at Cloud DNS |
 | CI/CD | **GitHub Actions** | Auth via Workload Identity Federation — no long-lived service-account keys |
 
 ## Repo layout
