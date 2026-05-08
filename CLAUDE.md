@@ -51,7 +51,7 @@ These exist because this is a side project Mathias wants to run with real engine
 - Run `terraform fmt -recursive` and `terraform validate` from `infra/` before committing.
 - Paste the relevant `terraform plan` output into the PR description for any infra PR.
 - Treat `terraform apply` as production: read the plan carefully, apply manually for now (no auto-apply on merge until we're confident).
-- **State** lives locally for now (`infra/terraform.tfstate`, gitignored). Move to a GCS backend before any second person or CI touches infra.
+- **State** lives in GCS at `gs://mathias-privat-tf-state/klrunning/default.tfstate`, configured in [`infra/backend.tf`](infra/backend.tf). Bucket is bootstrapped out-of-band (the bucket can't be Terraform-managed by state that lives in itself); bootstrap commands are in the comment at the top of `backend.tf`. GCS object-generation locking prevents concurrent applies from corrupting state.
 - `.terraform.lock.hcl` is committed to pin provider versions across machines.
 
 ## Secrets & what stays out of git
