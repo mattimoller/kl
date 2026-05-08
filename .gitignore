@@ -4,11 +4,12 @@ Thumbs.db
 .idea/
 .vscode/
 
-# --- Node / Astro ---
+# --- Node / Astro / Firebase CLI ---
 node_modules/
 dist/
 .astro/
 *.tsbuildinfo
+.firebase/
 
 # --- Env ---
 .env
