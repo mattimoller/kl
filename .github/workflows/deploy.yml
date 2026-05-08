@@ -1,0 +1,99 @@
+# Builds the Astro app and deploys it to Firebase Hosting.
+#
+# Auth: GitHub OIDC -> Workload Identity Federation -> impersonate the
+# github-deploy SA on mathias-privat. No long-lived service-account keys.
+# WIF + SA wiring lives in infra/github_actions.tf; this workflow only
+# consumes the WIF_PROVIDER + WIF_SERVICE_ACCOUNT secrets and the
+# FIREBASE_SITE_ID variable produced by `terraform output` after PR #3.
+#
+# Two modes:
+# - on `pull_request`: deploy to a per-PR preview channel
+#   (klrunning--pr-<n>-<hash>.web.app, expires after 7 days) and post the
+#   URL as a sticky comment on the PR
+# - on `push: master`: deploy to the live site (klrunning.web.app)
+#
+# Path filters keep this from running on infra-only or doc-only PRs.
+
+name: deploy
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+
+permissions:
+  contents: read
+  id-token: write       # required: GitHub mints the OIDC token consumed by WIF
+  pull-requests: write  # required: posting the preview-URL comment
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  deploy:
+    name: Build + deploy
+    runs-on: ubuntu-latest
+    # Skip PRs from forks — they can't read secrets and the workflow would fail anyway.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Authenticate to GCP via WIF
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Install Firebase CLI
+        run: npm install --no-save firebase-tools@latest
+
+      - name: Deploy preview channel (PR)
+        if: github.event_name == 'pull_request'
+        id: preview
+        run: |
+          channel="pr-${{ github.event.pull_request.number }}"
+          npx firebase-tools hosting:channel:deploy "$channel" \
+            --project mathias-privat \
+            --only "${{ vars.FIREBASE_SITE_ID }}" \
+            --expires 7d \
+            --json > preview.json
+          cat preview.json
+          url=$(jq -r '.result["${{ vars.FIREBASE_SITE_ID }}"].url' preview.json)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "expires=$(jq -r '.result["${{ vars.FIREBASE_SITE_ID }}"].expireTime' preview.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview URL on PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: firebase-preview
+          message: |
+            ### 🚀 Firebase preview deployed
+
+            **URL:** ${{ steps.preview.outputs.url }}
+            Channel `pr-${{ github.event.pull_request.number }}` expires at `${{ steps.preview.outputs.expires }}` (7 days from deploy).
+
+      - name: Deploy live site (master)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          npx firebase-tools deploy \
+            --project mathias-privat \
+            --only "hosting:${{ vars.FIREBASE_SITE_ID }}" \
+            --non-interactive
