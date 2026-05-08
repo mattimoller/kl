@@ -24,3 +24,17 @@ resource "google_dns_record_set" "apex_aaaa" {
   ttl          = 300
   rrdatas      = ["2600:1901:0:38d7::"]
 }
+
+# Firebase Hosting ownership verification at the apex.
+# Without this, the custom-domain resource sits at host_state =
+# HOST_UNREACHABLE and ownership_state = OWNERSHIP_UNREACHABLE, which
+# Firebase surfaces as a misleading DNS_SERVFAIL error. The verification
+# value is "hosting-site=<site_id>" — kept in sync with the Hosting site
+# resource via the variable rather than hardcoded.
+resource "google_dns_record_set" "apex_txt_firebase_verify" {
+  managed_zone = google_dns_managed_zone.klrunning.name
+  name         = "${var.domain}."
+  type         = "TXT"
+  ttl          = 300
+  rrdatas      = ["\"hosting-site=${var.firebase_site_id}\""]
+}
