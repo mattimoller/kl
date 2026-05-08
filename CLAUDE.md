@@ -22,8 +22,8 @@ This file is the working contract between Mathias and Claude (and a quick orient
 ```
 .
 ├── CLAUDE.md          # this file
-├── web/               # Astro app (added in PR #2)
-├── infra/             # Terraform (added in PR #3)
+├── web/               # Astro app
+├── infra/             # Terraform (GCP infra)
 └── .github/workflows/ # CI + deploy pipelines
 ```
 
@@ -48,9 +48,11 @@ These exist because this is a side project Mathias wants to run with real engine
 
 ### Infra changes
 
-- Run `terraform fmt` and `terraform validate` locally before committing.
+- Run `terraform fmt -recursive` and `terraform validate` from `infra/` before committing.
 - Paste the relevant `terraform plan` output into the PR description for any infra PR.
 - Treat `terraform apply` as production: read the plan carefully, apply manually for now (no auto-apply on merge until we're confident).
+- **State** lives locally for now (`infra/terraform.tfstate`, gitignored). Move to a GCS backend before any second person or CI touches infra.
+- `.terraform.lock.hcl` is committed to pin provider versions across machines.
 
 ## Secrets & what stays out of git
 
@@ -62,13 +64,12 @@ Already covered by `.gitignore`, but explicit so we're aligned:
 
 ## Local dev quickstart
 
-Filled in as scaffolding lands. Targets:
-
 ```bash
-# web/   — Astro dev server (added in PR #2)
+# web/   — Astro dev server
 cd web && npm install && npm run dev
 
-# infra/ — Terraform (added in PR #3)
+# infra/ — Terraform (requires `gcloud auth application-default login`
+# with quota project set to mathias-privat — see providers.tf)
 cd infra && terraform init && terraform plan
 ```
 
