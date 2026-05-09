@@ -1,48 +1,410 @@
 ---
-const title = 'klrunning';
-const tagline = 'A running club. Site under construction.';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import klLogo from '../assets/brand/kl-logo.png';
+import wordmark from '../assets/brand/kl-running-wordmark.png';
+import teamPhoto from '../assets/photos/team.jpg';
+import osloSmoke from '../assets/photos/oslo-smoke.jpg';
+import cheerCowbell from '../assets/photos/cheer-cowbell.jpg';
+import cheerFlag from '../assets/photos/cheer-flag.jpg';
+
+const title = 'KL Running';
+const description = 'An Oslo-based social running club. Est. 2020 in Kjelsås.';
+
+const strava = 'https://www.strava.com/clubs/753799';
+const instagram = 'https://www.instagram.com/klrunningclub/';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
-  </head>
-  <body>
-    <main>
-      <h1>{title}</h1>
-      <p>{tagline}</p>
-    </main>
-    <style>
-      body {
-        font-family: system-ui, -apple-system, sans-serif;
-        margin: 0;
-        min-height: 100dvh;
-        display: grid;
-        place-items: center;
-        background: #0b0e0f;
-        color: #f5f5f0;
-      }
-      main {
-        text-align: center;
-        padding: 2rem;
-      }
-      h1 {
-        font-size: clamp(3rem, 10vw, 6rem);
-        font-weight: 800;
-        letter-spacing: -0.04em;
-        margin: 0;
-      }
-      p {
-        opacity: 0.7;
-        margin: 0.75rem 0 0;
-        font-size: 1.125rem;
-      }
-    </style>
-  </body>
-</html>
+<BaseLayout title={title} description={description}>
+  <main>
+    <section class="hero">
+      <div class="hero__lockup">
+        <Image
+          src={klLogo}
+          alt="KL"
+          class="hero__logo"
+          widths={[600, 1200, 1800]}
+          sizes="(max-width: 768px) 70vw, 32rem"
+        />
+        <Image
+          src={wordmark}
+          alt="Running"
+          class="hero__wordmark"
+          widths={[400, 800, 1200]}
+          sizes="(max-width: 768px) 60vw, 28rem"
+        />
+      </div>
+      <p class="hero__tagline">Social running &middot; Oslo</p>
+      <a class="hero__scroll" href="#about" aria-label="Read more">
+        <span></span>
+      </a>
+    </section>
+
+    <section id="about" class="about">
+      <div class="container">
+        <h2>A social running club, spreading the love of running.</h2>
+        <p class="lede">
+          Group runs every day except Saturday &mdash; whether you're chasing
+          PBs or lacing up for the first time, there's a pace and a route for
+          you.
+        </p>
+        <ul class="values" aria-label="What we're about">
+          <li>Consistency</li>
+          <li>Inclusion</li>
+          <li>PBs</li>
+          <li><span aria-hidden="true">☕</span> &amp; <span aria-hidden="true">🍻</span></li>
+        </ul>
+        <p class="welcome">Everyone welcome <span aria-hidden="true">💙</span></p>
+      </div>
+    </section>
+
+    <section class="gallery">
+      <div class="container">
+        <div class="gallery__grid">
+          <figure class="gallery__item gallery__item--featured">
+            <Image
+              src={teamPhoto}
+              alt="The KL Running team after a race in Oslo"
+              widths={[800, 1200, 1800, 2400]}
+              sizes="(max-width: 768px) 100vw, 1100px"
+            />
+          </figure>
+          <figure class="gallery__item">
+            <Image
+              src={osloSmoke}
+              alt="Runners passing through blue smoke in front of Oslo City Hall"
+              widths={[400, 600, 900]}
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </figure>
+          <figure class="gallery__item">
+            <Image
+              src={cheerCowbell}
+              alt="A KL member cheering on runners with a cowbell"
+              widths={[400, 600, 900]}
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </figure>
+          <figure class="gallery__item">
+            <Image
+              src={cheerFlag}
+              alt="Cheering with the KL flag and megaphone as runners pass"
+              widths={[400, 600, 900]}
+              sizes="(max-width: 768px) 100vw, 33vw"
+            />
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container container--narrow">
+        <h3>Come run with us.</h3>
+        <div class="cta__buttons">
+          <a
+            class="cta__link"
+            href={strava}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              class="cta__icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+            >
+              <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+            </svg>
+            <span>Strava</span>
+          </a>
+          <a
+            class="cta__link cta__link--ghost"
+            href={instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg
+              class="cta__icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+              fill="currentColor"
+            >
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg>
+            <span>Instagram</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <span class="footer__mark">KL Running</span>
+      <span class="footer__meta">Est. 2020 &middot; Kjelsås, Oslo</span>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: var(--space-6) var(--space-5);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.10), transparent 55%),
+      radial-gradient(ellipse at 50% 100%, rgba(0, 0, 0, 0.25), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero__lockup {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    animation: rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .hero__logo {
+    width: min(72vw, 32rem);
+    height: auto;
+    filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.25));
+  }
+
+  .hero__wordmark {
+    width: min(60vw, 26rem);
+    height: auto;
+    opacity: 0.96;
+  }
+
+  .hero__tagline {
+    position: relative;
+    z-index: 1;
+    margin-top: var(--space-6);
+    color: var(--color-muted);
+    font-size: clamp(0.95rem, 1.6vw, 1.125rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    animation: rise 900ms 200ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--space-5);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5rem;
+    height: 2.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 999px;
+    z-index: 1;
+    text-decoration: none;
+  }
+  .hero__scroll span {
+    position: absolute;
+    top: 0.4rem;
+    left: 50%;
+    width: 3px;
+    height: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    transform: translateX(-50%);
+    animation: scrollHint 1.8s ease-in-out infinite;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollHint {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.7; }
+    50%      { transform: translate(-50%, 8px); opacity: 0.2; }
+  }
+
+  /* ---------- Sections ---------- */
+  .container {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+  .container--narrow {
+    max-width: 40rem;
+    text-align: center;
+  }
+
+  .about {
+    background: var(--color-brand-deep);
+    padding: clamp(var(--space-7), 12vw, var(--space-8)) var(--space-5);
+    border-top: 1px solid var(--color-faint);
+  }
+  .about h2 {
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: var(--space-4);
+    max-width: 22ch;
+  }
+  .lede {
+    max-width: var(--measure);
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--color-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .values {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) 0;
+    align-items: center;
+  }
+  .values li {
+    padding: 0 var(--space-4);
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-right: 1px solid var(--color-faint);
+  }
+  .values li:first-child { padding-left: 0; }
+  .values li:last-child  { border-right: 0; padding-right: 0; }
+
+  .welcome {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- Gallery ---------- */
+  .gallery {
+    padding: clamp(var(--space-7), 12vw, var(--space-8)) var(--space-5);
+    border-top: 1px solid var(--color-faint);
+  }
+  .gallery__grid {
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: 1fr;
+  }
+  .gallery__item {
+    margin: 0;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--color-brand-deep);
+    line-height: 0;
+  }
+  .gallery__item :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .gallery__item:hover :global(img) {
+    transform: scale(1.03);
+  }
+  @media (min-width: 768px) {
+    .gallery__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .gallery__item--featured {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .cta {
+    padding: clamp(var(--space-7), 10vw, var(--space-8)) var(--space-5);
+    text-align: center;
+    background: var(--color-brand-deep);
+    border-top: 1px solid var(--color-faint);
+  }
+  .cta h3 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-5);
+  }
+  .cta__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .cta__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: #ffffff;
+    color: var(--color-brand);
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    transition: transform 200ms ease, background 200ms ease, color 200ms ease;
+  }
+  .cta__link:hover {
+    transform: translateY(-2px);
+    background: #f4f4ff;
+  }
+  .cta__link--ghost {
+    background: transparent;
+    color: #fff;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+  .cta__link--ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .cta__icon {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Footer ---------- */
+  .footer {
+    padding: var(--space-5);
+    border-top: 1px solid var(--color-faint);
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .footer__mark {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__lockup,
+    .hero__tagline,
+    .hero__scroll span {
+      animation: none;
+    }
+    .cta__link,
+    .gallery__item :global(img) { transition: none; }
+  }
+</style>
