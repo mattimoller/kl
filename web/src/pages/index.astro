@@ -46,7 +46,7 @@ const instagram = 'https://www.instagram.com/klrunningclub/';
         <p class="lede">
           Group runs every day except Saturday &mdash; whether you're chasing
           PBs or lacing up for the first time, there's a pace and a route for
-          you.
+          you. <a href={strava} target="_blank" rel="noopener noreferrer">Full schedule on Strava</a>.
         </p>
         <ul class="values" aria-label="What we're about">
           <li>Consistency</li>
@@ -266,6 +266,11 @@ const instagram = 'https://www.instagram.com/klrunningclub/';
     font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
     color: var(--color-muted);
     margin-bottom: var(--space-6);
+  }
+  .lede a {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   .values {
