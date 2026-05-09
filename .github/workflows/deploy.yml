@@ -40,8 +40,8 @@ jobs:
   deploy:
     name: Build + deploy
     runs-on: ubuntu-latest
-    # Skip PRs from forks — they can't read secrets and the workflow would fail anyway.
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # Skip PRs from forks or Dependabot — they don't have access to secrets.
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
