@@ -3,16 +3,20 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import klLogo from '../assets/brand/kl-logo.png';
 import wordmark from '../assets/brand/kl-running-wordmark.png';
-import teamPhoto from '../assets/photos/team.jpg';
-import osloSmoke from '../assets/photos/oslo-smoke.jpg';
-import cheerCowbell from '../assets/photos/cheer-cowbell.jpg';
-import cheerFlag from '../assets/photos/cheer-flag.jpg';
+import { events } from '../data/events';
+
+const visibleEvents = events.filter((event) => event.photos.length > 0);
 
 const title = 'KL Running';
 const description = 'An Oslo-based social running club. Est. 2020 in Kjelsås.';
 
 const strava = 'https://www.strava.com/clubs/753799';
 const instagram = 'https://www.instagram.com/klrunningclub/';
+
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <BaseLayout title={title} description={description}>
@@ -58,42 +62,34 @@ const instagram = 'https://www.instagram.com/klrunningclub/';
       </div>
     </section>
 
-    <section class="gallery">
+    <section class="events">
       <div class="container">
-        <div class="gallery__grid">
-          <figure class="gallery__item gallery__item--featured">
-            <Image
-              src={teamPhoto}
-              alt="The KL Running team after a race in Oslo"
-              widths={[800, 1200, 1800, 2400]}
-              sizes="(max-width: 768px) 100vw, 1100px"
-            />
-          </figure>
-          <figure class="gallery__item">
-            <Image
-              src={osloSmoke}
-              alt="Runners passing through blue smoke in front of Oslo City Hall"
-              widths={[400, 600, 900]}
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </figure>
-          <figure class="gallery__item">
-            <Image
-              src={cheerCowbell}
-              alt="A KL member cheering on runners with a cowbell"
-              widths={[400, 600, 900]}
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </figure>
-          <figure class="gallery__item">
-            <Image
-              src={cheerFlag}
-              alt="Cheering with the KL flag and megaphone as runners pass"
-              widths={[400, 600, 900]}
-              sizes="(max-width: 768px) 100vw, 33vw"
-            />
-          </figure>
-        </div>
+        <h2 class="events__heading">From the course.</h2>
+        {visibleEvents.map((event) => (
+          <article class="event">
+            <header class="event__header">
+              <h3 class="event__title">{event.title}</h3>
+              <p class="event__meta">
+                <time datetime={event.date}>{dateFormatter.format(new Date(event.date))}</time>
+              </p>
+            </header>
+            <div class="event__grid">
+              {event.photos.map((photo) => {
+                const isWide = photo.src.width / photo.src.height > 1.2;
+                return (
+                  <figure class={`event__item${isWide ? ' event__item--wide' : ''}`}>
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      widths={[400, 600, 900, 1200, 1800]}
+                      sizes={isWide ? '(max-width: 768px) 100vw, 1024px' : '(max-width: 768px) 100vw, 50vw'}
+                    />
+                  </figure>
+                );
+              })}
+            </div>
+          </article>
+        ))}
       </div>
     </section>
 
@@ -299,38 +295,70 @@ const instagram = 'https://www.instagram.com/klrunningclub/';
     letter-spacing: -0.01em;
   }
 
-  /* ---------- Gallery ---------- */
-  .gallery {
+  /* ---------- Events ---------- */
+  .events {
     padding: clamp(var(--space-7), 12vw, var(--space-8)) var(--space-5);
     border-top: 1px solid var(--color-faint);
   }
-  .gallery__grid {
+  .events__heading {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: var(--space-6);
+  }
+  .event + .event {
+    margin-top: var(--space-7);
+  }
+  .event__header {
+    margin-bottom: var(--space-4);
+  }
+  .event__title {
+    font-size: clamp(1.25rem, 2.4vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: var(--space-1);
+  }
+  .event__meta {
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+  }
+  .event__meta time {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .event__grid {
     display: grid;
     gap: var(--space-3);
     grid-template-columns: 1fr;
   }
-  .gallery__item {
+  .event__item {
     margin: 0;
     border-radius: 14px;
     overflow: hidden;
     background: var(--color-brand-deep);
     line-height: 0;
+    aspect-ratio: 4 / 5;
   }
-  .gallery__item :global(img) {
+  .event__item :global(img) {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
+    object-fit: cover;
     transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
   }
-  .gallery__item:hover :global(img) {
+  .event__item:hover :global(img) {
     transform: scale(1.03);
   }
-  @media (min-width: 768px) {
-    .gallery__grid {
-      grid-template-columns: repeat(3, 1fr);
+  @media (min-width: 640px) {
+    .event__grid {
+      grid-template-columns: repeat(2, 1fr);
     }
-    .gallery__item--featured {
+    .event__item--wide {
       grid-column: 1 / -1;
+      aspect-ratio: 16 / 9;
     }
   }
 
@@ -410,6 +438,6 @@ const instagram = 'https://www.instagram.com/klrunningclub/';
       animation: none;
     }
     .cta__link,
-    .gallery__item :global(img) { transition: none; }
+    .event__item :global(img) { transition: none; }
   }
 </style>
